@@ -16,24 +16,30 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#include "hal_clock.h"
+#include "hal_timer.h"
+#include "hal_gpio.h"
+#include "hal_interrupt.h"
+#include "distanceMeasure.h"
+#include "UartDevice.h"
+
+
 //extern void initialise_monitor_handles();
-static void prvSetupUart(void);
-static void prvSetupHardware(void);
 
 TaskHandle_t xTaskHandler[2] = {NULL, NULL};
-void printMsg(char *msg);
+void printMsg(UINT8 *msg);
 void vTask1_Handler(void *params);
 void vTask2_Handler(void *params);
 
 //Global Variable
 bool UartFree = true;
-
+UINT8 objDistance;
 
 /**
  * Main Loop for the device
  *
  */
-int main(void)
+INT32 main(void)
 {
 
 	// Semi hosting
@@ -43,13 +49,24 @@ int main(void)
 	DWT->CTRL |= (1 << 0); // Enable CYNNT
 
 	// HSI On, PLL Off, HSE OFF, System Clock = 16MHz, cpu_clock = 16MHz
-    RCC_DeInit();
+    //RCC_DeInit();
+
+
+	// Initialize clock speed to 100MHz
+	// HSI On, PLL On, HSE OFF, System Clock = 16MHz, cpu_clock = 100MHz
+	SystemInit();
 
 	// Update the SystemCoreClock variable
 	SystemCoreClockUpdate();
 
-	//printf("Testing 2\n");
-	prvSetupHardware();
+	// Init all Uart ports
+	InitializeUartPorts();
+
+	// Init general purpose timer
+	hal_timer_init();
+
+	// Init the interrupt for user switch PC13
+	hal_setup_interrupt_PC13();
 
 	// Configure and start Segger
 	SEGGER_SYSVIEW_Conf();
@@ -61,79 +78,55 @@ int main(void)
 
 	vTaskStartScheduler();
 
+	return 0;
 }
 
+/**
+ * Start Task handing
+ *
+ */
 void vTask1_Handler(void *params)
 {
-    while(1)
-    {
-    	if (UartFree == true)
-    	{
-    		UartFree = false;
-			char usr_msg[250];
-			sprintf(usr_msg, "This is task 1\n\r");
-			printMsg(usr_msg);
-			UartFree = true;
-			taskYIELD();
-    	}
-    }
+	hal_gpioA_init();
+
+	while(1)
+	{
+		hal_gpioA_pin5_toggle();
+		//GPIO_WriteBit(GPIOC, GPIO_Pin_7, Bit_SET);
+		vTaskDelay(pdMS_TO_TICKS(1000));
+	}
 }
 
+/**
+ *
+ */
 void vTask2_Handler(void *params)
 {
     while(1)
     {
-    	if (UartFree == true)
-    	{
-    		UartFree = false;
-			char usr_msg[250];
-			sprintf(usr_msg, "This is task 2\n\r");
-			printMsg(usr_msg);
-			UartFree = true;
-			taskYIELD();
-    	}
+		UINT8 usr_msg[250];
+
+		sprintf(usr_msg, "Distance (cm) = %d\n\r", objDistance);
+		Uart2SendMsg(usr_msg);
+
+		taskYIELD();
     }
 }
 
-static void prvSetupUart(void)
+/**
+ * Interrupt handler for EXTI 13 (User Switch)
+ */
+void EXTI15_10_IRQHandler(void)
 {
-	GPIO_InitTypeDef gpio_uart_pins;
-	USART_InitTypeDef uart2_init;
+	traceISR_ENTER();
 
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+	//1. clear the interrupt pending bit of the EXTI line (13)
+	EXTI_ClearITPendingBit(EXTI_Line13);
 
-	memset(&gpio_uart_pins, 0, sizeof(gpio_uart_pins));
-	gpio_uart_pins.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3;
-	gpio_uart_pins.GPIO_Mode = GPIO_Mode_AF;
-	gpio_uart_pins.GPIO_PuPd = GPIO_PuPd_UP;
-	GPIO_Init(GPIOA, &gpio_uart_pins);
+	objDistance = MeasureDistance();
 
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_USART2);
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_USART2);
+	traceISR_EXIT();
 
-	memset(&uart2_init, 0, sizeof(uart2_init));
-	uart2_init.USART_BaudRate = 115200;
-	uart2_init.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-	uart2_init.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
-	uart2_init.USART_Parity = USART_Parity_No;
-	uart2_init.USART_StopBits = USART_StopBits_1;
-	uart2_init.USART_WordLength = USART_WordLength_8b;
-	USART_Init(USART2, &uart2_init);
-
-	USART_Cmd(USART2, ENABLE);
 }
 
-static void prvSetupHardware(void)
-{
-	prvSetupUart();
-}
 
-void printMsg(char* msg)
-{
-	for (UINT32 i = 0; i < strlen(msg); i++)
-	{
-		while(USART_GetFlagStatus(USART2, USART_FLAG_TXE) != SET);
-		USART_SendData(USART2, msg[i]);
-	}
-}

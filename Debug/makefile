@@ -34,13 +34,13 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: STM32HelloWord.elf
+all: STM32FreeRTOS.elf
 
 # Tool invocations
-STM32HelloWord.elf: $(OBJS) $(USER_OBJS) D:\work\STM32\STM32HelloWord/LinkerScript.ld
+STM32FreeRTOS.elf: $(OBJS) $(USER_OBJS) D:\work\STM32\STM32F4FreeRTOS\FreeRTOS_ST32F4/LinkerScript.ld
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU GCC Linker'
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -specs=rdimon.specs -lc -lrdimon -T"D:/work/STM32/STM32HelloWord/LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "STM32HelloWord.elf" @"objects.list" $(USER_OBJS) $(LIBS) -lm
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -specs=rdimon.specs -lc -lrdimon -T"D:/work/STM32/STM32F4FreeRTOS/FreeRTOS_ST32F4/LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "STM32FreeRTOS.elf" @"objects.list" $(USER_OBJS) $(LIBS) -lm
 	@echo 'Finished building target: $@'
 	@echo ' '
 	$(MAKE) --no-print-directory post-build
@@ -52,8 +52,8 @@ clean:
 
 post-build:
 	-@echo 'Generating binary and Printing size information:'
-	arm-none-eabi-objcopy -O binary "STM32HelloWord.elf" "STM32HelloWord.bin"
-	arm-none-eabi-size "STM32HelloWord.elf"
+	arm-none-eabi-objcopy -O binary "STM32FreeRTOS.elf" "STM32FreeRTOS.bin"
+	arm-none-eabi-size "STM32FreeRTOS.elf"
 	-@echo ' '
 
 .PHONY: all clean dependents
