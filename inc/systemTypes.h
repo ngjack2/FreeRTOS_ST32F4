@@ -53,6 +53,9 @@ typedef UINT64              UINT_64;
     #define FALSE   0
 #endif
 
+// Single bit shift left
+#define M(x) (1U << x)
+
 //
 //  Define macro to declare code extern "C" for c++
 //

@@ -8,10 +8,12 @@
 #include "asic.h"
 #include "hal_timer.h"
 
-// Function prototype declaraton
+//
+// Function prototype declaration
+//
 static void hal_timer2_init(void);
 static void hal_timer3_init(void);
-static UINT32 hal_get_timer2_counter(void);
+//static UINT32 hal_get_timer2_counter(void);
 static UINT32 hal_get_timer3_counter(void);
 
 /**
@@ -41,7 +43,7 @@ static void hal_timer2_init(void)
 	sTIM2->TIMx_CNT.all32 = 0;
 
 	// divide 50 for current clk speed
-	sTIM2->TIMx_PSC.all32 = 0;
+	sTIM2->TIMx_PSC.all32 = 51;
 
 	// Timer counter enable
 	sTIM2->TIMx_CR1.bits.CEN = 1;
@@ -75,7 +77,7 @@ static void hal_timer3_init(void)
  * Get free running timer2 counter value
  *
  */
-static UINT32 hal_get_timer2_counter(void)
+__externC UINT32 hal_get_timer2_counter(void)
 {
 
 	UINT32 value = sTIM2->TIMx_CNT.all32;
@@ -99,7 +101,7 @@ static UINT32 hal_get_timer3_counter(void)
  * Function that delay 1 ms
  *
  */
-__externC UINT32 hal_delay_ms(UINT32 value)
+__externC void hal_delay_ms(UINT32 value)
 {
 	for (UINT32 i = value; i > 0; i--)
 	{

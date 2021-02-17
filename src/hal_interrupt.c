@@ -7,12 +7,21 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include "FreeRTOS.h"
+#include "task.h"
 
 #include "systemTypes.h"
 #include "asic.h"
 #include "hal_interrupt.h"
 #include "stm32f4xx_gpio.h"
 
+
+// Global Variables
+
+
+/**
+ *
+ */
 __externC void hal_setup_interrupt_PC13(void)
 {
 	//
@@ -46,3 +55,5 @@ __externC void hal_setup_interrupt_PC13(void)
 	NVIC_SetPriority(EXTI15_10_IRQn, 5);
 	NVIC_EnableIRQ(EXTI15_10_IRQn);
 }
+
+

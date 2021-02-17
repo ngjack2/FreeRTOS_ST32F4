@@ -13,14 +13,41 @@
 #include "hal_timer.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "main.h"
 
+//
 // Definition
+//
 #define SPEED_OF_SOUND_SCALED 5831
-#define USE_SCALE 100
+#define USE_SCALE 1000
 
+//
+// Global Variables
+//
+UINT8 objDistance;
+
+//
 // function prototype
+//
 static void initGPIOForUltraSonic(void);
 static void startTriggerMode(void);
+
+/**
+ *
+ */
+__externC void IrqPC13Handler(void)
+{
+	traceISR_ENTER();
+
+	//1. clear the interrupt pending bit of the EXTI line (13)
+	EXTI_ClearITPendingBit(EXTI_Line13);
+
+	objDistance = 16;//MeasureDistance();
+
+	xTaskNotifyFromISR(xTaskHandler[1], 0, eNoAction, NULL);
+
+	traceISR_EXIT();
+}
 
 /**
  * Initialize device GPIO for sensor
@@ -57,11 +84,11 @@ static void startTriggerMode(void)
  */
 UINT32 readBackEchoTiming(void)
 {
-	UINT32 numberOfTickUs = 1;
+	UINT32 numberOfTickUs = 0;
 
 	while(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_6) != true);
 
-	hal_delay_20ns(5);
+	//hal_delay_20ns(5);
 
 	while(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_6) == true)
 	{

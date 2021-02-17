@@ -58,7 +58,7 @@ extern uint32_t SystemCoreClock;
 #define configMINIMAL_STACK_SIZE		( ( unsigned short ) 1300 )
 #define configTOTAL_HEAP_SIZE			( ( size_t ) ( 65 * 1024 ) )
 #define configMAX_TASK_NAME_LEN			( 10 )
-#define configUSE_TRACE_FACILITY		1
+#define configUSE_TRACE_FACILITY		0 // previous is 1 for tracing purposes
 #define configUSE_16_BIT_TICKS			0
 #define configIDLE_SHOULD_YIELD			1
 #define configUSE_MUTEXES				1
@@ -75,7 +75,7 @@ extern uint32_t SystemCoreClock;
 #define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
 
 /* Software timer definitions. */
-#define configUSE_TIMERS				0
+#define configUSE_TIMERS				1
 #define configTIMER_TASK_PRIORITY		( 2 )
 #define configTIMER_QUEUE_LENGTH		10
 #define configTIMER_TASK_STACK_DEPTH	( configMINIMAL_STACK_SIZE * 2 )
@@ -91,6 +91,7 @@ to exclude the API function. */
 #define INCLUDE_vTaskDelay				1
 #define INCLUDE_xTaskGetIdleTaskHandle  1
 #define INCLUDE_pxTaskGetStackStart     1
+#define INCLUDE_xTimerPendFunctionCall  1 // custom added in for event group
 
 /* Cortex-M specific definitions. */
 #ifdef __NVIC_PRIO_BITS

@@ -15,25 +15,28 @@
 #include "stm32f4xx.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "semphr.h"
+#include "event_groups.h"
+#include "queue.h"
 
 #include "hal_clock.h"
 #include "hal_timer.h"
 #include "hal_gpio.h"
 #include "hal_interrupt.h"
 #include "distanceMeasure.h"
-#include "UartDevice.h"
-
+#include "HostTask.h"
+#include "eventsFlag.h"
+#include "AppCommands.h"
 
 //extern void initialise_monitor_handles();
 
+//
+// FreeRtos handlers declaration
+//
 TaskHandle_t xTaskHandler[2] = {NULL, NULL};
-void printMsg(UINT8 *msg);
-void vTask1_Handler(void *params);
-void vTask2_Handler(void *params);
-
-//Global Variable
-bool UartFree = true;
-UINT8 objDistance;
+//SemaphoreHandle_t xSemaphore;
+EventGroupHandle_t xEventFlag;
+QueueHandle_t xTaskQueue;
 
 /**
  * Main Loop for the device
@@ -68,65 +71,48 @@ INT32 main(void)
 	// Init the interrupt for user switch PC13
 	hal_setup_interrupt_PC13();
 
+	//
+	hal_gpioA_init();
+
 	// Configure and start Segger
 	SEGGER_SYSVIEW_Conf();
 	SEGGER_SYSVIEW_Start();
 
-	xTaskCreate(vTask1_Handler, "Task-1", configMINIMAL_STACK_SIZE, NULL, 2, &xTaskHandler[0]);
+	//xSemaphore = xSemaphoreCreateBinary();
 
-	xTaskCreate(vTask2_Handler, "Task-2", configMINIMAL_STACK_SIZE, NULL, 2, &xTaskHandler[1]);
+	xEventFlag = xEventGroupCreate();
+
+	xTaskQueue = xQueueCreate(TOTAL_TASKS_IN_Q, sizeof(tAppCommand*));
+	//xTaskQueue = xQueueCreate(1, sizeof(tCommandQ));
+	if (xEventFlag == NULL || xTaskQueue == NULL)
+	{
+		return 1;
+	}
+
+	//xSemaphoreTake(xSemaphore, 0);
+
+	xTaskCreate(HostTask, "Host-Task", configMINIMAL_STACK_SIZE, NULL, 2, &xTaskHandler[0]);
+
+	xTaskCreate(ExecuteHandler, "Execute-Task", configMINIMAL_STACK_SIZE, NULL, 2, &xTaskHandler[1]);
 
 	vTaskStartScheduler();
 
 	return 0;
 }
 
-/**
- * Start Task handing
- *
- */
-void vTask1_Handler(void *params)
-{
-	hal_gpioA_init();
-
-	while(1)
-	{
-		hal_gpioA_pin5_toggle();
-		//GPIO_WriteBit(GPIOC, GPIO_Pin_7, Bit_SET);
-		vTaskDelay(pdMS_TO_TICKS(1000));
-	}
-}
 
 /**
  *
  */
-void vTask2_Handler(void *params)
+void RtosDelay(UINT32 delayMs)
 {
-    while(1)
-    {
-		UINT8 usr_msg[250];
+	UINT32 tickCountLocal;
 
-		sprintf(usr_msg, "Distance (cm) = %d\n\r", objDistance);
-		Uart2SendMsg(usr_msg);
+	UINT32 delayInTicks = (delayMs * configTICK_RATE_HZ) / 1000;
 
-		taskYIELD();
-    }
-}
+	tickCountLocal = xTaskGetTickCount();
 
-/**
- * Interrupt handler for EXTI 13 (User Switch)
- */
-void EXTI15_10_IRQHandler(void)
-{
-	traceISR_ENTER();
-
-	//1. clear the interrupt pending bit of the EXTI line (13)
-	EXTI_ClearITPendingBit(EXTI_Line13);
-
-	objDistance = MeasureDistance();
-
-	traceISR_EXIT();
-
+	while(xTaskGetTickCount() < (tickCountLocal + delayInTicks));
 }
 
 
