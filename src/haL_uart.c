@@ -200,7 +200,7 @@ __externC void Uart6ReceivedByte(void)
         {
         	xEventGroupSetBitsFromISR(xEventFlag, UART_1ST_BYTE_RX_EVENT, FALSE);
         }
-        else if (UartReceiver.packetByteCount > SIZE_RX_BUFFER)// || rxBuf == '\n')
+        else if (UartReceiver.packetByteCount >= SIZE_RX_BUFFER)// || rxBuf == '\n')
         {
         	//UartReceiver.Flags.bit.packetError = 1;
         	//xSemaphoreGiveFromISR(xSemaphore, FALSE);

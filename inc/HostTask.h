@@ -18,31 +18,30 @@
 // Define Global Variables
 typedef union
 {
-    UINT16 words[7];
+    UINT16 words[6];
     struct
     {
         UINT8     opCode;    // host command Opcode
-        UINT8     checksum;
-        UINT16    appOpCode;  // execute Apps OpCode;
+        UINT8     appOpCode;  // execute Apps OpCode;
+        UINT16    checksum;
         UINT16    xferCount;
         UINT16    param1;
         UINT16    param2;
         UINT16    param3;
-        UINT16    param4;
     } field;
 } tCDB;
 
 typedef struct
 {
 	UINT8  opCode;
+	UINT8  appOpCode;
 	union
 	{
-		UINT16 words[4];
+		UINT16 words[3];
 		struct
 		{
 			UINT16 param1;
 			UINT16 param2;
-			UINT16 param3;
 			UINT16 rc;
 		}fields;
 	};

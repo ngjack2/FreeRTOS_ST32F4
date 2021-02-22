@@ -25,7 +25,8 @@
 extern const tExecFunction ExecFunctionTable[] =
 {
 	{ NULL_FUNCTION, NULL},
-	{ CMD_DRIVE_FORWARD, cmdDriveForward },
+	{ CMD_DRIVE_MOTOR, cmdDriveMotor },
+	{ CMD_MEASURE_DISTANCE, cmdMeasureDistance },
 	{ FUNCTION_END, NULL}
 };
 
@@ -54,17 +55,25 @@ void ExecuteHandler(void *params)
  *
  *
  */
-void cmdDriveForward(tAppCommand *pAppCommand)
+void cmdDriveMotor(tAppCommand *pAppCommand)
 {
 	UINT16 direction = ((UINT16*)(pAppCommand->parameterBlockAddr))[0];
 	UINT16 speed     = ((UINT16*)(pAppCommand->parameterBlockAddr))[1];
 
-	UINT16 rc = MotorControl(direction, speed);
+	UINT16 rc = MotorControl((eMotorDirection)direction, speed);
 
 	if (pAppCommand->resultBlockAddr != NULL)
 	{
 		UINT16 *pData = (UINT32 *)pAppCommand->resultBlockAddr;
 		*pData = rc;
 	}
+}
+
+/**
+ *
+ */
+void cmdMeasureDistance(tAppCommand *pAppCommand)
+{
+	UINT16 rc = MeasureDistance();
 }
 

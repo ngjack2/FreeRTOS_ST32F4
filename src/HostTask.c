@@ -60,10 +60,10 @@ UINT32 waitForCommand(void)
 		else
 		{
 			CommandQ.opCode        = Cdb.field.opCode;
+			CommandQ.appOpCode     = Cdb.field.appOpCode;
 			CommandQ.fields.param1 = Cdb.field.param1;
 			CommandQ.fields.param2 = Cdb.field.param2;
-			CommandQ.fields.param3 = Cdb.field.param3;
-			CommandQ.fields.rc = ER_NO_ERROR;
+			CommandQ.fields.rc     = ER_NO_ERROR;
 		}
 	}
 
@@ -126,7 +126,7 @@ static void HostGetAppResult(void)
 static void HostSendCmdApp(void)
 {
 
-	pCommand->cmdId = CommandQ.opCode;
+	pCommand->cmdId = CommandQ.appOpCode;
 
 	pCommand->parameterBlockAddr = &CommandQ.words[0];
 

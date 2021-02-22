@@ -15,6 +15,7 @@ __externC void hal_gpioB_init(void);
 __externC void hal_gpioC_init(void);
 
 __externC void hal_gpioA_pin5_toggle(void);
+__externC void hal_gpioB_pin2_toggle(void);
 __externC void hal_gpioA_pin13_toggle(void);
 
 __externC UINT32 hal_get_gpioC_pin13(void);

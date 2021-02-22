@@ -29,7 +29,7 @@ __externC void hal_gpio_init(void)
 	hal_gpioB_init();
 
 	// Initialize the port C
-	//hal_gpioC_init();
+	hal_gpioC_init();
 
 }
 
@@ -60,12 +60,13 @@ __externC void hal_gpioA_init(void)
  */
 __externC void hal_gpioB_init(void)
 {
-	GPIO_InitTypeDef gpioPinB6;
+	GPIO_InitTypeDef gpioPinB6, gpioPinB1B2;
 
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-
+/*
 	memset(&gpioPinB6, 0, sizeof(gpioPinB6));
 
+	// Init pin as input GPIO
 	gpioPinB6.GPIO_Pin   = GPIO_Pin_6;
 	gpioPinB6.GPIO_Mode  = GPIO_Mode_IN;
 	gpioPinB6.GPIO_OType = GPIO_OType_PP;
@@ -73,6 +74,17 @@ __externC void hal_gpioB_init(void)
 	gpioPinB6.GPIO_Speed = GPIO_Speed_50MHz;
 
 	GPIO_Init(GPIOB, &gpioPinB6);
+*/
+	memset(&gpioPinB1B2, 0, sizeof(gpioPinB1B2));
+
+	// Init pin as output GPIO
+	gpioPinB1B2.GPIO_Pin   = GPIO_Pin_1 | GPIO_Pin_2;
+	gpioPinB1B2.GPIO_Mode  = GPIO_Mode_OUT;
+	gpioPinB1B2.GPIO_OType = GPIO_OType_PP;
+	gpioPinB1B2.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+	gpioPinB1B2.GPIO_Speed = GPIO_Speed_50MHz;
+
+	GPIO_Init(GPIOB, &gpioPinB1B2);
 }
 
 /**
@@ -106,7 +118,7 @@ __externC void hal_gpioC_init(void)
 	//
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 
-	GPIO_InitTypeDef gpioPinC7;
+	GPIO_InitTypeDef gpioPinC7, gpioPinC5C6;
 	memset(&gpioPinC7, 0, sizeof(gpioPinC7));
 
 	gpioPinC7.GPIO_Pin   = GPIO_Pin_7;
@@ -117,6 +129,19 @@ __externC void hal_gpioC_init(void)
 
 	GPIO_Init(GPIOC, &gpioPinC7);
 
+	//
+	// Configure Port C Pin5 & Pin6 for Motor control
+	//
+	memset(&gpioPinC5C6, 0, sizeof(gpioPinC5C6));
+
+	gpioPinC5C6.GPIO_Pin   = GPIO_Pin_5 | GPIO_Pin_6;
+	gpioPinC5C6.GPIO_Mode  = GPIO_Mode_OUT;
+	gpioPinC5C6.GPIO_OType = GPIO_OType_PP;
+	gpioPinC5C6.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+	gpioPinC5C6.GPIO_Speed = GPIO_Speed_50MHz;
+
+	GPIO_Init(GPIOC, &gpioPinC5C6);
+
 }
 
 /**
@@ -126,6 +151,15 @@ __externC void hal_gpioC_init(void)
 __externC void hal_gpioA_pin5_toggle(void)
 {
 	sGPIOA->GPIOx_ODR.bits.ODR5 ^= 1;
+}
+
+/**
+ * Toggle GPIO Port B pin 1
+ *
+ */
+__externC void hal_gpioB_pin2_toggle(void)
+{
+	sGPIOB->GPIOx_ODR.bits.ODR1 ^= 1;
 }
 
 /**

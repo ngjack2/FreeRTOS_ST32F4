@@ -14,10 +14,8 @@
 enum eExecFunctionList
 {
 	NULL_FUNCTION = 0,
-	CMD_DRIVE_FORWARD,
-	CMD_DRIVE_LEFT,
-	CMD_DRIVE_RIGHT,
-	CMD_DRIVE_BACKWARD,
+	CMD_DRIVE_MOTOR,
+	CMD_MEASURE_DISTANCE,
 	FUNCTION_END = 0xFFFF,
 };
 
@@ -48,6 +46,7 @@ typedef struct
 extern QueueHandle_t xTaskQueue;
 
 extern void ExecuteHandler(void *params);
-extern void cmdDriveForward(tAppCommand *pAppCommand);
+extern void cmdDriveMotor(tAppCommand *pAppCommand);
+extern void cmdMeasureDistance(tAppCommand *pAppCommand);
 
 #endif /* INC_APPCOMMANDS_H_ */

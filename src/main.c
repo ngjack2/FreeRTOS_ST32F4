@@ -71,8 +71,8 @@ INT32 main(void)
 	// Init the interrupt for user switch PC13
 	hal_setup_interrupt_PC13();
 
-	//
-	hal_gpioA_init();
+	// Initialize the ports for the sensors, and motors
+	hal_gpio_init
 
 	// Configure and start Segger
 	SEGGER_SYSVIEW_Conf();

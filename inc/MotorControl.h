@@ -8,6 +8,19 @@
 #ifndef INC_MOTORCONTROL_H_
 #define INC_MOTORCONTROL_H_
 
-extern UINT16 MotorControl(INT16 direction, INT32 speed);
+
+typedef enum eMotorState
+{
+	MOTOR_STOP = 0,
+	MOTOR_FORWARD,
+	MOTOR_BACKWARD,
+	MOTOR_LEFT,
+	MOTOR_RIGHT,
+	MOTOR_END_STATE,
+}eMotorDirection;
+
+
+extern UINT16 MotorControl(eMotorDirection direction, UINT16 speed);
+extern void InitMotorDriverPort(void);
 
 #endif /* INC_MOTORCONTROL_H_ */

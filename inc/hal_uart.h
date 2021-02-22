@@ -11,7 +11,7 @@
 //
 // Type definition and structures
 //
-#define SIZE_RX_BUFFER 13
+#define SIZE_RX_BUFFER 12
 typedef struct
 {
     unsigned char   *pRxBuf;         // receive buffer pointer

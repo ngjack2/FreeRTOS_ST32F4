@@ -31,6 +31,7 @@ UINT8 objDistance;
 //
 static void initGPIOForUltraSonic(void);
 static void startTriggerMode(void);
+static UINT32 readBackEchoTiming(void);
 
 /**
  *
@@ -44,7 +45,10 @@ __externC void IrqPC13Handler(void)
 
 	objDistance = 16;//MeasureDistance();
 
-	xTaskNotifyFromISR(xTaskHandler[1], 0, eNoAction, NULL);
+	// Start pull up trigger pin for 10us
+	GPIO_ToggleBits(GPIOC, GPIO_Pin_5);
+
+	//xTaskNotifyFromISR(xTaskHandler[1], 0, eNoAction, NULL);
 
 	traceISR_EXIT();
 }
@@ -82,7 +86,7 @@ static void startTriggerMode(void)
 /**
  * Wait for Echo pin trigger and measure timing
  */
-UINT32 readBackEchoTiming(void)
+static UINT32 readBackEchoTiming(void)
 {
 	UINT32 numberOfTickUs = 0;
 
@@ -103,7 +107,7 @@ UINT32 readBackEchoTiming(void)
  * Start measure distance of object
  *
  */
-__externC UINT32 MeasureDistance(void)
+UINT32 MeasureDistance(void)
 {
 	UINT32 distance = 0;
 	UINT32 rawValue = 0;
