@@ -8,8 +8,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include "ErrorsDB.h"
 #include "systemTypes.h"
+#include "ErrorsDB.h"
 #include "stm32f4xx.h"
 #include "FreeRTOS.h"
 #include "task.h"
@@ -20,6 +20,7 @@
 #include "eventsFlag.h"
 #include "HostTask.h"
 #include "UartAPI.h"
+#include "main.h"
 #include "AppCommands.h"
 
 //
@@ -96,6 +97,10 @@ void HostTask(void *params)
 		if (rc == ER_NO_ERROR)
 		{
 			HostCommandTable[CommandQ.opCode].pFunc();
+		}
+		else
+		{
+			UartSendMessage(errorCodeTable[rc].errorCodeMessage, sizeof(errorCodeTable[rc].errorCodeMessage));
 		}
 
 		taskYIELD();

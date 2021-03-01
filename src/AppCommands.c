@@ -17,10 +17,13 @@
 #include "queue.h"
 
 #include "eventsFlag.h"
+#include "main.h"
 #include "HostTask.h"
 #include "AppCommands.h"
 #include "UartApi.h"
-#include "MotorControl.h"
+
+void cmdDriveMotor(tAppCommand *pAppCommand);
+void cmdMeasureDistance(tAppCommand *pAppCommand);
 
 extern const tExecFunction ExecFunctionTable[] =
 {
@@ -51,29 +54,4 @@ void ExecuteHandler(void *params)
     }
 }
 
-/**
- *
- *
- */
-void cmdDriveMotor(tAppCommand *pAppCommand)
-{
-	UINT16 direction = ((UINT16*)(pAppCommand->parameterBlockAddr))[0];
-	UINT16 speed     = ((UINT16*)(pAppCommand->parameterBlockAddr))[1];
-
-	UINT16 rc = MotorControl((eMotorDirection)direction, speed);
-
-	if (pAppCommand->resultBlockAddr != NULL)
-	{
-		UINT16 *pData = (UINT32 *)pAppCommand->resultBlockAddr;
-		*pData = rc;
-	}
-}
-
-/**
- *
- */
-void cmdMeasureDistance(tAppCommand *pAppCommand)
-{
-	UINT16 rc = MeasureDistance();
-}
 

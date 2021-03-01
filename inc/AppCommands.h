@@ -43,10 +43,6 @@ typedef struct
 //
 //
 //
-extern QueueHandle_t xTaskQueue;
-
 extern void ExecuteHandler(void *params);
-extern void cmdDriveMotor(tAppCommand *pAppCommand);
-extern void cmdMeasureDistance(tAppCommand *pAppCommand);
 
 #endif /* INC_APPCOMMANDS_H_ */

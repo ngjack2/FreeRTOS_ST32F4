@@ -104,7 +104,7 @@ static void InitializeUart6Device(void)
 	GPIO_PinAFConfig(GPIOA, GPIO_PinSource12, GPIO_AF_USART6);
 
 	memset(&uart6_init, 0, sizeof(uart6_init));
-	uart6_init.USART_BaudRate = 9600;
+	uart6_init.USART_BaudRate = BAUDRATE;
 	uart6_init.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 	uart6_init.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
 	uart6_init.USART_Parity = USART_Parity_No;
@@ -200,10 +200,8 @@ __externC void Uart6ReceivedByte(void)
         {
         	xEventGroupSetBitsFromISR(xEventFlag, UART_1ST_BYTE_RX_EVENT, FALSE);
         }
-        else if (UartReceiver.packetByteCount >= SIZE_RX_BUFFER)// || rxBuf == '\n')
+        else if (UartReceiver.packetByteCount >= SIZE_RX_BUFFER)
         {
-        	//UartReceiver.Flags.bit.packetError = 1;
-        	//xSemaphoreGiveFromISR(xSemaphore, FALSE);
         	xEventGroupSetBitsFromISR(xEventFlag, UART_RX_EVENT, FALSE);
         }
     }

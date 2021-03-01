@@ -23,7 +23,6 @@
 #include "hal_timer.h"
 #include "hal_gpio.h"
 #include "hal_interrupt.h"
-#include "distanceMeasure.h"
 #include "HostTask.h"
 #include "eventsFlag.h"
 #include "AppCommands.h"
@@ -72,7 +71,14 @@ INT32 main(void)
 	hal_setup_interrupt_PC13();
 
 	// Initialize the ports for the sensors, and motors
-	hal_gpio_init
+	// Initialize the port A
+	hal_gpioA_init();
+
+	// Initialize the port B
+	hal_gpioB_init();
+
+	// Initialize the port C
+	hal_gpioC_init();
 
 	// Configure and start Segger
 	SEGGER_SYSVIEW_Conf();
@@ -91,7 +97,7 @@ INT32 main(void)
 
 	//xSemaphoreTake(xSemaphore, 0);
 
-	xTaskCreate(HostTask, "Host-Task", configMINIMAL_STACK_SIZE, NULL, 2, &xTaskHandler[0]);
+	xTaskCreate(HostTask, "Host-Task", configMINIMAL_STACK_SIZE, NULL, 3, &xTaskHandler[0]);
 
 	xTaskCreate(ExecuteHandler, "Execute-Task", configMINIMAL_STACK_SIZE, NULL, 2, &xTaskHandler[1]);
 

@@ -9,5 +9,6 @@
 #define INC_MAIN_H_
 
 __externC TaskHandle_t xTaskHandler[2];
+__externC QueueHandle_t xTaskQueue;
 
 #endif /* INC_MAIN_H_ */
