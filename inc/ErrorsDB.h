@@ -8,10 +8,25 @@
 #ifndef INC_ERRORSDB_H_
 #define INC_ERRORSDB_H_
 
-#define BASE_ERROR_ADDR 0x5000
+//
+//
+//
+enum eErrorCodeList
+{
+	ER_NO_ERROR = 0,
+	ER_UART6_TIMEOUT_RX,
+	ER_CHKSUM_ERROR,
+};
 
-#define ER_NO_ERROR            BASE_ERROR_ADDR + 1
-#define ER_UART6_TIMEOUT_RX    BASE_ERROR_ADDR + 2
-#define ER_CHKSUM_ERROR        BASE_ERROR_ADDR + 3
+//
+//
+//
+typedef struct
+{
+	enum eErrorCodeList eErrCodeList;
+	UINT8 errorCodeMessage[200];
+}tErrorCodeStruct;
+
+__externC tErrorCodeStruct errorCodeTable[];
 
 #endif /* INC_ERRORSDB_H_ */

@@ -19,8 +19,8 @@ const BitAction bMotorState[MOTOR_END_STATE][4] =
 	{ RESET, RESET, RESET, RESET }, // idle
 	{ SET, RESET, SET, RESET },     // forward
 	{ RESET, SET, RESET, SET },     // backward
-	{ RESET, RESET, SET, RESET },   // left
-	{ SET, RESET, RESET, RESET }    // right
+	{ RESET, RESET, SET, RESET },   // right
+	{ SET, RESET, RESET, RESET }    // left
 };
 
 /**

@@ -72,7 +72,7 @@ INT32 main(void)
 	hal_setup_interrupt_PC13();
 
 	// Initialize the ports for the sensors, and motors
-	hal_gpio_init
+	hal_gpio_init();
 
 	// Configure and start Segger
 	SEGGER_SYSVIEW_Conf();
@@ -91,7 +91,7 @@ INT32 main(void)
 
 	//xSemaphoreTake(xSemaphore, 0);
 
-	xTaskCreate(HostTask, "Host-Task", configMINIMAL_STACK_SIZE, NULL, 2, &xTaskHandler[0]);
+	xTaskCreate(HostTask, "Host-Task", configMINIMAL_STACK_SIZE, NULL, 3, &xTaskHandler[0]);
 
 	xTaskCreate(ExecuteHandler, "Execute-Task", configMINIMAL_STACK_SIZE, NULL, 2, &xTaskHandler[1]);
 

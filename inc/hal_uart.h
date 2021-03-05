@@ -12,6 +12,9 @@
 // Type definition and structures
 //
 #define SIZE_RX_BUFFER 12
+#define BITS_PER_BYTE 10 //8 bits data + 1 start + 1 stop
+#define BAUDRATE 9600
+
 typedef struct
 {
     unsigned char   *pRxBuf;         // receive buffer pointer
