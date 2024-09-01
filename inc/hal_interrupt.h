@@ -9,5 +9,6 @@
 #define INC_HAL_INTERRUPT_H_
 
 __externC void hal_setup_interrupt_PC13(void);
+__externC void hal_setup_interrupt_timer2(void);
 
 #endif /* INC_HAL_INTERRUPT_H_ */

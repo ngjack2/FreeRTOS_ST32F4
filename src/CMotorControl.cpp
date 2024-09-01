@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <vector>
+#include <memory>
 #include "systemTypes.h"
 #include "ErrorsDB.h"
 #include "stm32f4xx.h"
@@ -39,7 +41,9 @@ __externC void cmdDriveMotor(tAppCommand *pAppCommand)
 
 	CMotorControl *p = new CMotorControl();
 
+
 	p->RunMotorControl((eMotorDirection)direction, speed);
+
 
 	if (pAppCommand->resultBlockAddr != NULL)
 	{

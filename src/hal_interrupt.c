@@ -52,8 +52,23 @@ __externC void hal_setup_interrupt_PC13(void)
 	EXTI_Init(&exti_init);
 
 	// setting NVIC for Line 13
-	NVIC_SetPriority(EXTI15_10_IRQn, 5);
+	//NVIC_SetPriority(EXTI15_10_IRQn, 5);
 	NVIC_EnableIRQ(EXTI15_10_IRQn);
 }
 
+/**
+ *
+ */
+__externC void hal_setup_interrupt_timer2(void)
+{
+    // NVIC configuration
+    NVIC_InitTypeDef NVIC_InitStruct;
+    NVIC_InitStruct.NVIC_IRQChannel = TIM2_IRQn;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStruct);
 
+	// Enable TIM2 interrupt
+	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+}

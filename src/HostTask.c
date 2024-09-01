@@ -72,13 +72,39 @@ UINT32 waitForCommand(void)
 }
 
 /**
+ * Check Opcode Command in the range
+ *
+ * @return - Error Code for Opcode Range
+ */
+UINT32 CheckCommandValid(void)
+{
+	UINT32 rc = ER_NO_ERROR;
+
+	UINT32 totalOpcode = sizeof(HostCommandTable);
+	UINT32 divider     = sizeof(tHostCommandTable);
+
+	if(CommandQ.opCode > 2)
+	{
+		rc = ER_OPCODE_ERROR;
+	}
+
+	return rc;
+}
+
+/**
  * Get command from interface device bluetooth HC05
  *
  * @return - Error Code
  */
 UINT32 GetCommandFromUart(void)
 {
-	return(waitForCommand());
+	UINT32 rc = ER_NO_ERROR;
+
+	rc = waitForCommand();
+	if (rc == ER_NO_ERROR)
+	{
+		rc = CheckCommandValid();
+	}
 }
 
 /**
@@ -117,11 +143,13 @@ static void HostGetAppResult(void)
 {
 	UINT8 usr_msg[100];
 
-	sprintf(usr_msg, "AppsResult=%d\r\n", CommandQ.fields.rc);
+	sprintf(&usr_msg[0], "AppsResult=%d\r\n", CommandQ.fields.rc);
 
-	hal_gpioA_pin5_toggle();
+	//hal_gpioA_pin5_toggle();
 
 	UartSendMessage(usr_msg, sizeof(usr_msg));
+
+	//hal_gpioA_pin5_toggle();
 }
 
 /**

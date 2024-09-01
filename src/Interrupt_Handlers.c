@@ -20,11 +20,16 @@
  */
 void USART2_IRQHandler(void)
 {
-	NVIC_DisableIRQ(USART2_IRQn);
+	//NVIC_DisableIRQ(USART2_IRQn);
 
-	Uart2ReceivedByte();
+	if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
+	{
+		Uart2ReceivedByte();
 
-	NVIC_EnableIRQ(USART2_IRQn);
+		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
+	}
+
+	//NVIC_EnableIRQ(USART2_IRQn);
 }
 
 /**
@@ -32,11 +37,14 @@ void USART2_IRQHandler(void)
  */
 void USART6_IRQHandler(void)
 {
-	NVIC_DisableIRQ(USART6_IRQn);
+	//NVIC_DisableIRQ(USART6_IRQn);
+	if (USART_GetITStatus(USART6, USART_IT_RXNE) != RESET)
+	{
+		Uart6ReceivedByte();
 
-	Uart6ReceivedByte();
-
-	NVIC_EnableIRQ(USART6_IRQn);
+		USART_ClearITPendingBit(USART6, USART_IT_RXNE);
+	}
+	//NVIC_EnableIRQ(USART6_IRQn);
 }
 
 /**
@@ -45,4 +53,21 @@ void USART6_IRQHandler(void)
 void EXTI15_10_IRQHandler(void)
 {
 	IrqPC13Handler();
+}
+
+/**
+ * Interrupt handler for TIM2 Every 1ms
+ */
+void TIM2_IRQHandler(void)
+{
+	//NVIC_DisableIRQ(TIM2_IRQn);
+
+	if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)
+	{
+		IrqTimer2Handler();
+
+		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+	}
+
+	//NVIC_EnableIRQ(TIM2_IRQn);
 }

@@ -53,6 +53,23 @@ __externC void hal_gpioA_init(void)
 
 	// Change the GPIOA-5 to no push-pull
 	sGPIOA->GPIOx_PUPDR.bits.PUPDR5 = 0x0;
+
+	//
+    // Initialize GPIO pins as PWM output for TIM1
+	//
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+
+    GPIO_InitTypeDef gpioPinA8;
+    memset(&gpioPinA8, 0, sizeof(gpioPinA8));
+
+    gpioPinA8.GPIO_Pin   = GPIO_Pin_8; // TIM1_CH1 (PA8)
+    gpioPinA8.GPIO_Mode  = GPIO_Mode_AF;
+    gpioPinA8.GPIO_Speed = GPIO_Speed_100MHz;
+    gpioPinA8.GPIO_OType = GPIO_OType_PP;
+    gpioPinA8.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+
+    GPIO_Init(GPIOA, &gpioPinA8);
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource8, GPIO_AF_TIM1);
 }
 
 /**
@@ -118,7 +135,7 @@ __externC void hal_gpioC_init(void)
 	//
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 
-	GPIO_InitTypeDef gpioPinC7, gpioPinC5C6;
+	GPIO_InitTypeDef gpioPinC7;
 	memset(&gpioPinC7, 0, sizeof(gpioPinC7));
 
 	gpioPinC7.GPIO_Pin   = GPIO_Pin_7;
@@ -132,6 +149,7 @@ __externC void hal_gpioC_init(void)
 	//
 	// Configure Port C Pin5 & Pin6 for Motor control
 	//
+	GPIO_InitTypeDef gpioPinC5C6;
 	memset(&gpioPinC5C6, 0, sizeof(gpioPinC5C6));
 
 	gpioPinC5C6.GPIO_Pin   = GPIO_Pin_5 | GPIO_Pin_6;
@@ -141,6 +159,23 @@ __externC void hal_gpioC_init(void)
 	gpioPinC5C6.GPIO_Speed = GPIO_Speed_50MHz;
 
 	GPIO_Init(GPIOC, &gpioPinC5C6);
+
+	//
+	// Configure Port C Pin9 for MCO
+	//
+	GPIO_InitTypeDef gpioPinC9;
+	memset(&gpioPinC9, 0, sizeof(gpioPinC9));
+
+	gpioPinC9.GPIO_Pin   = GPIO_Pin_9;
+	gpioPinC9.GPIO_Mode  = GPIO_Mode_AF;
+	gpioPinC9.GPIO_OType = GPIO_OType_PP;
+	gpioPinC9.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+	gpioPinC9.GPIO_Speed = GPIO_Speed_100MHz;
+
+	GPIO_Init(GPIOC, &gpioPinC9);
+
+	// Configure MCO output
+	GPIO_PinAFConfig(GPIOC, GPIO_PinSource8, GPIO_AF_MCO);
 
 }
 

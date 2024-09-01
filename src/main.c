@@ -22,6 +22,7 @@
 #include "hal_clock.h"
 #include "hal_timer.h"
 #include "hal_gpio.h"
+#include "hal_uart.h"
 #include "hal_interrupt.h"
 #include "HostTask.h"
 #include "eventsFlag.h"
@@ -64,12 +65,6 @@ INT32 main(void)
 	// Init all Uart ports
 	InitializeUartPorts();
 
-	// Init general purpose timer
-	hal_timer_init();
-
-	// Init the interrupt for user switch PC13
-	hal_setup_interrupt_PC13();
-
 	// Initialize the ports for the sensors, and motors
 	// Initialize the port A
 	hal_gpioA_init();
@@ -79,6 +74,15 @@ INT32 main(void)
 
 	// Initialize the port C
 	hal_gpioC_init();
+
+	// Init the interrupt for user switch PC13
+	hal_setup_interrupt_PC13();
+
+	// Init general purpose timer
+	hal_timer_init();
+
+	// Init Timer2 as 1ms interrupt
+	//hal_setup_interrupt_timer2();
 
 	// Configure and start Segger
 	SEGGER_SYSVIEW_Conf();

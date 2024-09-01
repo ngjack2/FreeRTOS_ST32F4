@@ -16,6 +16,8 @@ enum eErrorCodeList
 	ER_NO_ERROR = 0,
 	ER_UART6_TIMEOUT_RX,
 	ER_CHKSUM_ERROR,
+	ER_OPCODE_ERROR,
+	ER_END_LINE,
 };
 
 //

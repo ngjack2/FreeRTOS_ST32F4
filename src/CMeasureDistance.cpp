@@ -46,11 +46,21 @@ __externC void IrqPC13Handler(void)
 	//1. clear the interrupt pending bit of the EXTI line (13)
 	EXTI_ClearITPendingBit(EXTI_Line13);
 
+	hal_gpioA_pin5_toggle();
+
 	objDistance = 16;//MeasureDistance();
 
 	//xTaskNotifyFromISR(xTaskHandler[1], 0, eNoAction, NULL);
 
 	traceISR_EXIT();
+}
+
+/**
+ * Timer 2 Interrupt Handler Trigger Every 1ms
+ */
+__externC void IrqTimer2Handler(void)
+{
+	hal_gpioA_pin5_toggle();
 }
 
 /**

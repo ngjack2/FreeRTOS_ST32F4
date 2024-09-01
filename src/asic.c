@@ -22,23 +22,46 @@ volatile tFLASH* sFLASH = (volatile tFLASH*)(FLASH_BASE_ADDR);
 volatile tPWR* sPWR = (volatile tPWR*)(PWR_BASE_ADDR);
 
 //
+// for APB1 Base Address
+//
+#define APB1_BASE_ADDR 0x40000000UL
+
 // for TIMx base address
-//
-#define TIM2_BASE_ADDR 0x40000000UL
+volatile tTIMx* sTIM2   = (volatile tTIMx*)(APB1_BASE_ADDR);
+volatile tTIMx* sTIM3   = (volatile tTIMx*)(APB1_BASE_ADDR + 0x0400UL);
+volatile tTIMx* sTIM4   = (volatile tTIMx*)(APB1_BASE_ADDR + 0x0800UL);
+volatile tTIMx* sTIM5   = (volatile tTIMx*)(APB1_BASE_ADDR + 0x0C00UL);
+volatile tTIMx* sTIM6   = (volatile tTIMx*)(APB1_BASE_ADDR + 0x1000UL);
+volatile tTIMx* sTIM7   = (volatile tTIMx*)(APB1_BASE_ADDR + 0x1400UL);
+volatile tTIMx* sTIM12  = (volatile tTIMx*)(APB1_BASE_ADDR + 0x1800UL);
+volatile tTIMx* sTIM13  = (volatile tTIMx*)(APB1_BASE_ADDR + 0x1C00UL);
+volatile tTIMx* sTIM14  = (volatile tTIMx*)(APB1_BASE_ADDR + 0x2000UL);
 
-volatile tTIMx* sTIM2  = (volatile tTIMx*)(TIM2_BASE_ADDR);
-volatile tTIMx* sTIM3  = (volatile tTIMx*)(TIM2_BASE_ADDR + 0x400UL);
-volatile tTIMx* sTIM4  = (volatile tTIMx*)(TIM2_BASE_ADDR + 0x800UL);
-volatile tTIMx* sTIM5  = (volatile tTIMx*)(TIM2_BASE_ADDR + 0xC00UL);
 
 //
-// for GPIOx
+// for APB2 Base Address
 //
-#define GPIO_BASE_ADDR 0x40020000UL
+#define APB2_BASE_ADDR 0x40010000UL
 
-volatile tGPIO* sGPIOA = (volatile tGPIO*)(GPIO_BASE_ADDR);
-volatile tGPIO* sGPIOB = (volatile tGPIO*)(GPIO_BASE_ADDR + 0x400);
-volatile tGPIO* sGPIOC = (volatile tGPIO*)(GPIO_BASE_ADDR + 0x800);
+volatile tTIMx* sTIM1   = (volatile tTIMx*)(APB2_BASE_ADDR);
+volatile tTIMx* sTIM8   = (volatile tTIMx*)(APB2_BASE_ADDR + 0x0400UL);
+
+
+//
+// for AHB1 Base Address
+//
+#define AHB1_BASE_ADDR 0x40020000UL
+
+// for GPIOx base address
+volatile tGPIO* sGPIOA = (volatile tGPIO*)(AHB1_BASE_ADDR);
+volatile tGPIO* sGPIOB = (volatile tGPIO*)(AHB1_BASE_ADDR + 0x0400UL);
+volatile tGPIO* sGPIOC = (volatile tGPIO*)(AHB1_BASE_ADDR + 0x0800UL);
+volatile tGPIO* sGPIOD = (volatile tGPIO*)(AHB1_BASE_ADDR + 0x0C00UL);
+volatile tGPIO* sGPIOE = (volatile tGPIO*)(AHB1_BASE_ADDR + 0x1000UL);
+volatile tGPIO* sGPIOF = (volatile tGPIO*)(AHB1_BASE_ADDR + 0x1400UL);
+volatile tGPIO* sGPIOG = (volatile tGPIO*)(AHB1_BASE_ADDR + 0x1800UL);
+volatile tGPIO* sGPIOH = (volatile tGPIO*)(AHB1_BASE_ADDR + 0x1C00UL);
+
 
 //
 // for RCC
