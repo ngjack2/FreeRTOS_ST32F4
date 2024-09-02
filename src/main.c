@@ -82,7 +82,7 @@ INT32 main(void)
 	hal_timer_init();
 
 	// Init Timer2 as 1ms interrupt
-	//hal_setup_interrupt_timer2();
+	hal_setup_interrupt_timer2();
 
 	// Configure and start Segger
 	SEGGER_SYSVIEW_Conf();

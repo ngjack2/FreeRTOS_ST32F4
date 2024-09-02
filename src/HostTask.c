@@ -126,7 +126,9 @@ void HostTask(void *params)
 		}
 		else
 		{
-			UartSendMessage(errorCodeTable[rc].errorCodeMessage, sizeof(errorCodeTable[rc].errorCodeMessage));
+			//UartSendMessage(errorCodeTable[rc].errorCodeMessage, sizeof(errorCodeTable[rc].errorCodeMessage));
+			UINT8 usr_msg[] = "B\r\n";
+			UartSendMessage(usr_msg, 5);
 		}
 
 		taskYIELD();
@@ -141,13 +143,15 @@ void HostTask(void *params)
  */
 static void HostGetAppResult(void)
 {
-	UINT8 usr_msg[100];
+	//UINT8 usr_msg[100];
 
-	sprintf(&usr_msg[0], "AppsResult=%d\r\n", CommandQ.fields.rc);
+	//sprintf(&usr_msg[0], "AppsResult=%d\r\n", CommandQ.fields.rc);
 
 	//hal_gpioA_pin5_toggle();
 
-	UartSendMessage(usr_msg, sizeof(usr_msg));
+	//UartSendMessage(usr_msg, sizeof(usr_msg));
+	UINT8 usr_msg[] = "A\r\n";
+	UartSendMessage(usr_msg, 5);
 
 	//hal_gpioA_pin5_toggle();
 }

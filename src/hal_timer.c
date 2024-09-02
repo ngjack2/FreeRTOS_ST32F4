@@ -43,9 +43,9 @@ static void hal_timer1_init(void)
     // Configure TIM1 as PWM
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStruct;
 
-    TIM_TimeBaseStruct.TIM_Prescaler     = 0; // No prescaler
+    TIM_TimeBaseStruct.TIM_Prescaler     = 99; // No prescaler
     TIM_TimeBaseStruct.TIM_CounterMode   = TIM_CounterMode_Up;
-    TIM_TimeBaseStruct.TIM_Period        = 1000; // PWM period (adjust as needed)
+    TIM_TimeBaseStruct.TIM_Period        = 999; // PWM period (adjust as needed)
     TIM_TimeBaseStruct.TIM_ClockDivision = 0;
     TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStruct);
 
@@ -54,7 +54,7 @@ static void hal_timer1_init(void)
 
     TIM_OCInitStruct.TIM_OCMode      = TIM_OCMode_PWM1;
     TIM_OCInitStruct.TIM_OutputState = TIM_OutputState_Enable;
-    TIM_OCInitStruct.TIM_Pulse       = 500; // Initial duty cycle (adjust as needed)
+    TIM_OCInitStruct.TIM_Pulse       = 799; // Initial duty cycle (adjust as needed)
     TIM_OCInitStruct.TIM_OCPolarity  = TIM_OCPolarity_High; // Active high output
     TIM_OC1Init(TIM1, &TIM_OCInitStruct);
 
@@ -91,9 +91,9 @@ static void hal_timer2_init(void)
 
 	// Initialize TIM2
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStruct;
-	TIM_TimeBaseInitStruct.TIM_Prescaler = 99; // Prescaler value to achieve 1us resolution
+	TIM_TimeBaseInitStruct.TIM_Prescaler = 999; // Prescaler value to achieve 1ms resolution
 	TIM_TimeBaseInitStruct.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_TimeBaseInitStruct.TIM_Period = 19; // Period value to achieve 1ms interrupt
+	TIM_TimeBaseInitStruct.TIM_Period = 99; // Period value to achieve 1ms interrupt
 	TIM_TimeBaseInitStruct.TIM_ClockDivision = 0;
 	TIM_TimeBaseInitStruct.TIM_RepetitionCounter = 0;
 	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseInitStruct);
@@ -114,21 +114,36 @@ static void hal_timer2_init(void)
  */
 static void hal_timer3_init(void)
 {
-	// Enable timer 2
+	/*
+	// Enable timer 3
 	sRCC->RCC_APB1ENR.bits.TIM3EN = 1;
 
 	// Load 0 into auto reload register
-	sTIM3->TIMx_ARR.all32 = 0;
+	sTIM3->TIMx_ARR.all32 = 0xFFFF;
 
 	//
 	sTIM3->TIMx_CNT.all32 = 0;
 
 	// prescale 50000 (0x) ticks of 20ns is 1ms
-	sTIM3->TIMx_PSC.all32 = 0xC350;
+	sTIM3->TIMx_PSC.all32 = 50;
 
 	// Timer counter enable
 	sTIM3->TIMx_CR1.bits.CEN = 1;
+*/
+    // Enable the TIM3 clock
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
 
+    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+
+    // Time base configuration
+    TIM_TimeBaseStructure.TIM_Period = 0xFFFF; // Auto-reload value arranged for max interval
+    TIM_TimeBaseStructure.TIM_Prescaler = 99; // Prescaler for 1 µs tick (100MHz Clock / (99+1))
+    TIM_TimeBaseStructure.TIM_ClockDivision = 0; // ClockDivision
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up; // Count-up mode
+    TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+
+    // Enable TIM3
+    TIM_Cmd(TIM3, ENABLE);
 }
 
 /**
@@ -150,7 +165,7 @@ __externC UINT32 hal_get_timer2_counter(void)
 static UINT32 hal_get_timer3_counter(void)
 {
 
-	UINT32 value = sTIM3->TIMx_CNT.all32;
+	UINT32 value = TIM3->CNT;//sTIM3->TIMx_CNT.all32;
 
 	return (value);
 }
@@ -161,12 +176,20 @@ static UINT32 hal_get_timer3_counter(void)
  */
 __externC void hal_delay_ms(UINT32 value)
 {
+	/*
 	for (UINT32 i = value; i > 0; i--)
 	{
 		// loop for 1us for 1000 times equal to 1ms
 		for (UINT32 j = 0; j < 10; j++)
 			hal_delay_20ns(5000);
 	}
+	*/
+	value *= 1000;
+
+	volatile UINT32 startTime = hal_get_timer3_counter();
+
+	while ((hal_get_timer3_counter() - startTime) <= value);
+
 }
 
 /**
