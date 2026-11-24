@@ -1,0 +1,28 @@
+{
+    // Makefile Tools: use the root Makefile (mirrors the Eclipse Debug configuration)
+    "makefile.makefilePath": "${workspaceFolder}/Makefile",
+    "makefile.makePath": "C:/gnu1_06/bin/make.exe",
+    "makefile.configurations": [
+        {
+            "name": "Debug",
+            "makeArgs": ["-j8"]
+        }
+    ],
+    "makefile.defaultLaunchConfiguration": {
+        "binaryPath": "${workspaceFolder}/build/Debug/STM32F4CPP.elf"
+    },
+    "makefile.compileCommandsPath": "${workspaceFolder}/build/compile_commands.json",
+
+    // Cortex-Debug: toolchain used for arm-none-eabi-gdb / objdump
+    "cortex-debug.armToolchainPath": "C:/WesternDigital_Tools/arm-none-eabi-gcc/12.3.1/bin",
+
+    "files.associations": {
+        "*.hpp": "cpp",
+        "*.s": "arm",
+        "*.S": "arm"
+    },
+    "search.exclude": {
+        "build/**": true,
+        "Debug/**": true
+    }
+}

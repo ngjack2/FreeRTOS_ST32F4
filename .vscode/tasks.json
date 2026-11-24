@@ -1,0 +1,31 @@
+{
+    "version": "2.0.0",
+    "options": {
+        "env": {
+            "PATH": "C:/gnu1_06/bin;C:/WesternDigital_Tools/arm-none-eabi-gcc/12.3.1/bin;${env:PATH}"
+        }
+    },
+    "tasks": [
+        {
+            "label": "Build (Debug)",
+            "type": "process",
+            "command": "C:/gnu1_06/bin/make.exe",
+            "args": ["-j8"],
+            "group": { "kind": "build", "isDefault": true },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Clean",
+            "type": "process",
+            "command": "C:/gnu1_06/bin/make.exe",
+            "args": ["clean"],
+            "problemMatcher": []
+        },
+        {
+            "label": "Rebuild (Debug)",
+            "dependsOrder": "sequence",
+            "dependsOn": ["Clean", "Build (Debug)"],
+            "problemMatcher": []
+        }
+    ]
+}

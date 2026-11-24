@@ -1,0 +1,38 @@
+{
+    "configurations": [
+        {
+            "name": "STM32F411 Debug",
+            "compilerPath": "C:/WesternDigital_Tools/arm-none-eabi-gcc/12.3.1/bin/arm-none-eabi-g++.exe",
+            "compilerArgs": [
+                "-mcpu=cortex-m4",
+                "-mthumb",
+                "-mfloat-abi=hard",
+                "-mfpu=fpv4-sp-d16"
+            ],
+            "intelliSenseMode": "gcc-arm",
+            "configurationProvider": "ms-vscode.makefile-tools",
+            "includePath": [
+                "${workspaceFolder}/StdPeriph_Driver/inc",
+                "${workspaceFolder}/ThirdParty/FreeRTOS/org/Source/include",
+                "${workspaceFolder}/ThirdParty/FreeRTOS/org/Source/portable/GCC/ARM_CM4F",
+                "${workspaceFolder}/ThirdParty/Segger/Config",
+                "${workspaceFolder}/ThirdParty/Segger/OS",
+                "${workspaceFolder}/ThirdParty/Segger/Segger",
+                "${workspaceFolder}/inc",
+                "${workspaceFolder}/CMSIS/device",
+                "${workspaceFolder}/CMSIS/core",
+                "${workspaceFolder}/Config"
+            ],
+            "defines": [
+                "STM32",
+                "STM32F4",
+                "STM32F411RETx",
+                "NUCLEO_F411RE",
+                "DEBUG",
+                "STM32F411xE",
+                "USE_STDPERIPH_DRIVER"
+            ]
+        }
+    ],
+    "version": 4
+}
