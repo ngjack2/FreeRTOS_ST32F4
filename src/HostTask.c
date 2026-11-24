@@ -49,11 +49,11 @@ UINT32 waitForCommand(void)
 	tCDB Cdb;
 	UINT32 rc = ER_NO_ERROR;
 
-	rc = UartSerialReceived(&Cdb, sizeof(Cdb));
+	rc = UartSerialReceived((UINT8 *)&Cdb, sizeof(Cdb));
 	if (rc == ER_NO_ERROR)
 	{
 		// Check the received packet checksum
-		UINT8 rxChecksum = calculateCmdByteChecksum(&Cdb, sizeof(Cdb));
+		UINT8 rxChecksum = calculateCmdByteChecksum((UINT8 *)&Cdb, sizeof(Cdb));
 		if (0)//Cdb.field.checksum != rxChecksum)
 		{
 			rc = ER_CHKSUM_ERROR;
@@ -83,7 +83,7 @@ UINT32 CheckCommandValid(void)
 	UINT32 totalOpcode = sizeof(HostCommandTable);
 	UINT32 divider     = sizeof(tHostCommandTable);
 
-	if(CommandQ.opCode > 2)
+	if (CommandQ.opCode >= (totalOpcode / divider))
 	{
 		rc = ER_OPCODE_ERROR;
 	}
@@ -105,6 +105,8 @@ UINT32 GetCommandFromUart(void)
 	{
 		rc = CheckCommandValid();
 	}
+
+	return rc;
 }
 
 /**
@@ -116,6 +118,10 @@ void HostTask(void *params)
 	UINT32 rc = ER_NO_ERROR;
 
 	pCommand = (tAppCommand*)(pvPortMalloc(sizeof(tAppCommand)));
+	configASSERT(pCommand != NULL);
+
+	// Enable UART RX interrupts only now that the scheduler is running
+	UartStartReceiver();
 
 	while(1)
 	{

@@ -16,6 +16,7 @@ __externC tErrorCodeStruct errorCodeTable[] =
 	{ ER_UART6_TIMEOUT_RX,    "ERROR_UART_TIMEOUT_RECEIVED\r\n" },
 	{ ER_CHKSUM_ERROR,        "ERROR_RECEIVED_DATA_CHECKSUM\r\n" },
 	{ ER_OPCODE_ERROR,        "OPCODE RECEIVED OUT OF RANGE\r\n" },
+	{ ER_UART_RX_ERROR,       "ERROR_UART_RX_LINE_ERROR\r\n" },
 };
 
 

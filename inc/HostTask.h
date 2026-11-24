@@ -66,7 +66,7 @@ typedef struct
 } tHostCommandTable;
 
 // Extern functions
-extern tHostCommandTable HostCommandTable[MAX_COMMANDS];
+extern tHostCommandTable HostCommandTable[];
 extern void HostTask(void *params);
 
 #endif /* INC_HOSTTASK_H_ */

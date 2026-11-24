@@ -89,29 +89,19 @@ UINT32 calculateXferTime(UINT16 transferByteCount)
  */
 UINT32 UartSerialReceived(UINT8 *pBuf, UINT8 byteCnt)
 {
-	UINT32 rc = ER_NO_ERROR;
+	UINT32 waitTimeInTicks = calculateXferTime(byteCnt);
 
-	// Initialize Uart Rx structure
-	memset(&UartReceiver, 0, sizeof(UartReceiver));
-	UartReceiver.pRxBuf          = pBuf;
-	UartReceiver.packetByteCount = 0;
-	UartReceiver.packetSize      = byteCnt;
+	// Blocks until the 1st byte arrives, then waits up to waitTimeInTicks for the rest
+	return Uart6Receive(pBuf, byteCnt, waitTimeInTicks);
+}
 
-	UINT32 waitTimeInTicks = calculateXferTime(UartReceiver.packetSize);
-
-	EventBits_t eventBit = xEventGroupWaitBits(xEventFlag, UART_1ST_BYTE_RX_EVENT, FALSE, FALSE, portMAX_DELAY);
-	if (eventBit & UART_1ST_BYTE_RX_EVENT)
-	{
-		eventBit = xEventGroupWaitBits(xEventFlag, UART_RX_EVENT, FALSE, FALSE, waitTimeInTicks);
-		if (!(eventBit & UART_RX_EVENT))
-		{
-			UartReceiver.Flags.bit.timedout = TRUE;
-			rc = ER_UART6_TIMEOUT_RX;
-		}
-		xEventGroupClearBits(xEventFlag, UART_1ST_BYTE_RX_EVENT | UART_RX_EVENT);
-	}
-
-	return rc;
+/**
+ * Enable the UART receive interrupts.
+ * Must be called from task context after the scheduler has started.
+ */
+void UartStartReceiver(void)
+{
+	UartEnableRxInterrupts();
 }
 
 /**

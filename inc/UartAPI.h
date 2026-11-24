@@ -10,5 +10,6 @@
 
 extern void UartSendMessage(UINT8 *pBuf, UINT8 byteCnt);
 extern UINT32 UartSerialReceived(UINT8 *pBuf, UINT8 byteCnt);
+extern void UartStartReceiver(void);
 
 #endif /* INC_UARTAPI_H_ */

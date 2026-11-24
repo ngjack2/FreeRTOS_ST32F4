@@ -22,12 +22,8 @@ void USART2_IRQHandler(void)
 {
 	//NVIC_DisableIRQ(USART2_IRQn);
 
-	if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
-	{
-		Uart2ReceivedByte();
-
-		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
-	}
+	// Handles RXNE and ORE/NE/FE (clears error flags to avoid IRQ storm)
+	Uart2IrqHandler();
 
 	//NVIC_EnableIRQ(USART2_IRQn);
 }
@@ -38,12 +34,10 @@ void USART2_IRQHandler(void)
 void USART6_IRQHandler(void)
 {
 	//NVIC_DisableIRQ(USART6_IRQn);
-	if (USART_GetITStatus(USART6, USART_IT_RXNE) != RESET)
-	{
-		Uart6ReceivedByte();
 
-		USART_ClearITPendingBit(USART6, USART_IT_RXNE);
-	}
+	// Handles RXNE and ORE/NE/FE (clears error flags to avoid IRQ storm)
+	Uart6IrqHandler();
+
 	//NVIC_EnableIRQ(USART6_IRQn);
 }
 
