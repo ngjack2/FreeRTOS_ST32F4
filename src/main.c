@@ -62,7 +62,10 @@ INT32 main(void)
 	// Update the SystemCoreClock variable
 	SystemCoreClockUpdate();
 
-	// Init all Uart ports
+	// FreeRTOS on Cortex-M requires all priority bits to be preemption bits
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+
+	// Init all Uart ports (RX interrupts are enabled later by HostTask)
 	InitializeUartPorts();
 
 	// Initialize the ports for the sensors, and motors

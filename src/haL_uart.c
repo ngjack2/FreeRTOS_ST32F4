@@ -25,21 +25,18 @@ static void InitializeUart2Device(void);
 static void InitializeUart6Device(void);
 
 //
-// Define structures for Uart transmit and recieve interrutps
+// Define structures for Uart transmit interrutps
+// (RX state is owned by CUartRx, see CUartRx.cpp)
 //
-UartRx UartReceiver;
 UartTx UartTransmitter;
-UINT8 buf[200];
 
 /**
  * Initialize all the UART ports
+ * Note: RX interrupts are enabled later by UartEnableRxInterrupts(),
+ *       once the scheduler is running.
  */
 __externC void InitializeUartPorts(void)
 {
-	memset(&UartReceiver, 0, sizeof(UartRx));
-	UartReceiver.packetSize = SIZE_RX_BUFFER;
-	UartReceiver.waitTime   = 10000;
-
 	InitializeUart2Device();
 
 	InitializeUart6Device();
@@ -76,10 +73,6 @@ static void InitializeUart2Device(void)
 	USART_Init(USART2, &uart2_init);
 
 	USART_Cmd(USART2, ENABLE);
-
-	USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
-	NVIC_SetPriority(USART2_IRQn, 5);
-	NVIC_EnableIRQ(USART2_IRQn);
 }
 
 /**
@@ -113,11 +106,6 @@ static void InitializeUart6Device(void)
 	USART_Init(USART6, &uart6_init);
 
 	USART_Cmd(USART6, ENABLE);
-
-	USART_ITConfig(USART6, USART_IT_RXNE, ENABLE);
-	NVIC_SetPriority(USART6_IRQn, 5);
-	NVIC_EnableIRQ(USART6_IRQn);
-
 }
 
 /**
@@ -135,33 +123,6 @@ __externC void Uart2SendMsg(UINT8* pBuf, UINT8 byteCnt)
 }
 
 /**
- * UART2 received message
- */
-__externC void Uart2ReceivedByte(void)
-{
-    /* RXNE handler */
-    if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
-    {
-    	UINT8 rxBuf;
-        /* If received 't', toggle LED and transmit 'T' */
-        rxBuf = (UINT8)USART_ReceiveData(USART2);
-        buf[UartReceiver.packetByteCount] = rxBuf;
-        //UartReceiver.pRxBuf[UartReceiver.packetByteCount++] = rxBuf;
-
-        // Clear the RXNE flag to avoid overlapping
-        USART_ClearFlag(USART2, USART_IT_RXNE);
-
-        //if (UartReceiver.packetByteCount > SIZE_RX_BUFFER)
-        if (UartReceiver.packetByteCount == UartReceiver.packetSize)
-        {
-        	//UartReceiver.Flags.bit.packetError = 1;
-        	//xSemaphoreGiveFromISR(xSemaphore, FALSE);
-        	xEventGroupSetBitsFromISR(xEventFlag, UART_RX_EVENT, FALSE);
-        }
-    }
-}
-
-/**
  * UART6 Tx Abraction Layer
  *
  * @param -
@@ -176,35 +137,5 @@ __externC void Uart6SendMsg(UINT8 *pBuf, UINT8 byteCnt)
 		if (pBuf[i] == '\n')
 			break;
 	}
-}
-
-/**
- * UART6 receive message in
- */
-__externC void Uart6ReceivedByte(void)
-{
-    /* RXNE handler */
-    if(USART_GetITStatus(USART6, USART_IT_RXNE) != RESET)
-    {
-    	UINT8 rxBuf;
-
-        rxBuf = (UINT8)USART_ReceiveData(USART6);
-
-        buf[UartReceiver.packetByteCount] = rxBuf;
-        UartReceiver.pRxBuf[UartReceiver.packetByteCount++] = rxBuf;
-
-        // Clear the RXNE flag to avoid overlapping
-        USART_ClearFlag(USART6, USART_IT_RXNE);
-
-        if (UartReceiver.packetByteCount == 1)
-        {
-        	xEventGroupSetBitsFromISR(xEventFlag, UART_1ST_BYTE_RX_EVENT, FALSE);
-        }
-        else if (UartReceiver.packetByteCount >= SIZE_RX_BUFFER)
-        {
-        	xEventGroupSetBitsFromISR(xEventFlag, UART_RX_EVENT, FALSE);
-        }
-    }
-
 }
 
