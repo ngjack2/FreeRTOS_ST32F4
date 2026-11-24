@@ -19,10 +19,17 @@ enum eExecFunctionList
 	FUNCTION_END = 0xFFFF,
 };
 
+typedef struct
+{
+    UINT16 cmdId;
+    void * parameterBlockAddr;
+    void * resultBlockAddr;
+} tAppCommand;
+
 //
 // Execution function type
 //
-typedef void(*ExecFunction)(void *);
+typedef void(*ExecFunction)(tAppCommand *);
 
 //
 // Execute function enum and handler pair
@@ -33,16 +40,15 @@ typedef struct
     ExecFunction pFunction;
 } tExecFunction;
 
-typedef struct
-{
-    UINT16 cmdId;
-    void * parameterBlockAddr;
-    void * resultBlockAddr;
-} tAppCommand;
-
 //
 //
 //
 extern void ExecuteHandler(void *params);
+
+//
+// Application command handlers (implemented in C++ modules)
+//
+__externC void cmdDriveMotor(tAppCommand *pAppCommand);
+__externC void cmdMeasureDistance(tAppCommand *pAppCommand);
 
 #endif /* INC_APPCOMMANDS_H_ */

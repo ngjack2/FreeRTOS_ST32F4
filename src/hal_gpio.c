@@ -77,10 +77,11 @@ __externC void hal_gpioA_init(void)
  */
 __externC void hal_gpioB_init(void)
 {
-	GPIO_InitTypeDef gpioPinB6, gpioPinB1B2;
+	GPIO_InitTypeDef gpioPinB1B2;
 
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 /*
+	GPIO_InitTypeDef gpioPinB6;
 	memset(&gpioPinB6, 0, sizeof(gpioPinB6));
 
 	// Init pin as input GPIO

@@ -10,7 +10,7 @@
 //
 //
 //
-__externC tErrorCodeStruct errorCodeTable[] =
+tErrorCodeStruct errorCodeTable[] =
 {
 	{ ER_NO_ERROR,            "NO_ERROR\r\n" },
 	{ ER_UART6_TIMEOUT_RX,    "ERROR_UART_TIMEOUT_RECEIVED\r\n" },

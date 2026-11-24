@@ -20,12 +20,9 @@
 #include "main.h"
 #include "HostTask.h"
 #include "AppCommands.h"
-#include "UartApi.h"
+#include "UartAPI.h"
 
-void cmdDriveMotor(tAppCommand *pAppCommand);
-void cmdMeasureDistance(tAppCommand *pAppCommand);
-
-extern const tExecFunction ExecFunctionTable[] =
+const tExecFunction ExecFunctionTable[] =
 {
 	{ NULL_FUNCTION, NULL},
 	{ CMD_DRIVE_MOTOR, cmdDriveMotor },

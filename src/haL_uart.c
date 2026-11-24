@@ -131,7 +131,7 @@ __externC void Uart6SendMsg(UINT8 *pBuf, UINT8 byteCnt)
 {
 	for (UINT32 i = 0; i < byteCnt; i++)
 	{
-	    while(USART_GetFlagStatus(USART6, USART_FLAG_TXE) != SET);
+		while(USART_GetFlagStatus(USART6, USART_FLAG_TXE) != SET);
 		USART_SendData(USART6, pBuf[i]);
 
 		if (pBuf[i] == '\n')

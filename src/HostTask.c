@@ -37,8 +37,8 @@ static tCommandQ CommandQ;
 static tAppCommand *pCommand;
 tHostCommandTable HostCommandTable[] =
 {
-	{ HostGetAppResult, APP_INIT_BITS },
-	{ HostSendCmdApp,   APP_INIT_BITS },
+	{ HostGetAppResult, { APP_INIT_BITS } },
+	{ HostSendCmdApp,   { APP_INIT_BITS } },
 };
 
 /**
@@ -54,6 +54,7 @@ UINT32 waitForCommand(void)
 	{
 		// Check the received packet checksum
 		UINT8 rxChecksum = calculateCmdByteChecksum((UINT8 *)&Cdb, sizeof(Cdb));
+		(void)rxChecksum;
 		if (0)//Cdb.field.checksum != rxChecksum)
 		{
 			rc = ER_CHKSUM_ERROR;

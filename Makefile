@@ -122,7 +122,10 @@ DEP_FLAGS     = -MMD -MP -MF$(@:%.o=%.d) -MT$@
 CFLAGS   := $(MCU_FLAGS) $(DEFS) $(C_INCLUDES) $(COMMON_FLAGS)
 CXXFLAGS := $(MCU_FLAGS) $(DEFS) $(CXX_INCLUDES) $(COMMON_FLAGS) -fno-exceptions -fno-rtti
 ASFLAGS  := $(MCU_FLAGS) $(ASM_INCLUDES) -g
-LDFLAGS  := $(MCU_FLAGS) -T$(LINKER_SCRIPT) -Wl,-Map=$(BUILD_DIR)/output.map -Wl,--gc-sections -fno-exceptions -fno-rtti
+# --no-warn-rwx-segments: GCC 12+ ld flags .init_array/.fini_array (always "WA") placed
+# in ROM; harmless here. Not added to LinkerScript.ld as (READONLY) because the
+# older Ac6/Eclipse linker does not support that keyword.
+LDFLAGS  := $(MCU_FLAGS) -T$(LINKER_SCRIPT) -Wl,-Map=$(BUILD_DIR)/output.map -Wl,--gc-sections -Wl,--no-warn-rwx-segments -fno-exceptions -fno-rtti
 LIBS     := -lm
 
 #
